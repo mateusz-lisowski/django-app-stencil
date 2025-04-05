@@ -1,0 +1,112 @@
+# --- Python ---
+# Virtual environment folders
+venv/
+.venv/
+env/
+.env/
+ENV/
+*/activate*
+*/pyvenv.cfg
+pip-selfcheck.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# --- Django ---
+# Database files (common development databases)
+*.sqlite3
+*.sql
+db.sqlite3-journal # SQLite journal file
+
+# Media files (user-uploaded content - typically shouldn't be in version control)
+/media/
+
+# Static files collected by collectstatic (these are generated, not source files)
+/static/
+/staticfiles/
+
+# Log files
+*.log
+logs/
+
+# Celery task queue files
+celerybeat-schedule
+celerybeat.pid
+
+# Local settings (often contains sensitive keys)
+local_settings.py
+local.py
+*.local.py
+
+# --- PyCharm ---
+# IDE specific files/folders
+.idea/
+*.iml
+# Avoid committing run configurations that might contain user-specific paths or secrets
+# unless they are explicitly meant to be shared (e.g., default run configs)
+# .idea/runConfigurations/
+
+# --- OS Generated Files ---
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.#*
+
+# --- Other ---
+# Sensitive environment variables file (if you use python-dotenv or similar)
+.env
+.env.*
+!/.env.example # Often good to commit an example env file
+
+# Temporary files
+*.swp
+*.swo
+*~
