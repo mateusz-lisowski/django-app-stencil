@@ -14,14 +14,14 @@ class Command(BaseCommand):
 
         if not all([SU_NAME, SU_EMAIL, SU_PASSWORD]):
             self.stdout.write(self.style.ERROR(
-                'Missing environment variables: DJANGO_SUPERUSER_USERNAME, '
-                'DJANGO_SUPERUSER_EMAIL, DJANGO_SUPERUSER_PASSWORD'
+                "Missing environment variables: DJANGO_SUPERUSER_USERNAME, "
+                "DJANGO_SUPERUSER_EMAIL, DJANGO_SUPERUSER_PASSWORD"
             ))
             return
 
         if not User.objects.filter(username=SU_NAME).exists():
-            self.stdout.write(self.style.SUCCESS(f'Creating superuser: {SU_NAME}'))
+            self.stdout.write(self.style.SUCCESS(f"Creating superuser: {SU_NAME}"))
             User.objects.create_superuser(username=SU_NAME, email=SU_EMAIL, password=SU_PASSWORD)
-            self.stdout.write(self.style.SUCCESS('Superuser created successfully.'))
+            self.stdout.write(self.style.SUCCESS("Superuser created successfully."))
         else:
-            self.stdout.write(self.style.WARNING(f'Superuser {SU_NAME} already exists. Skipping.'))
+            self.stdout.write(self.style.WARNING(f"Superuser {SU_NAME} already exists. Skipping."))
