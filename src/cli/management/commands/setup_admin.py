@@ -8,9 +8,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        SU_NAME = config('DJANGO_SUPERUSER_USERNAME', default='admin', cast=str)
-        SU_EMAIL = config('DJANGO_SUPERUSER_EMAIL', default='admin@example.com', cast=str)
-        SU_PASSWORD = config('DJANGO_SUPERUSER_PASSWORD', default='admin', cast=str)
+        SU_NAME = config('DJANGO_SUPERUSER_USERNAME', default=None, cast=str)
+        SU_EMAIL = config('DJANGO_SUPERUSER_EMAIL', default=None, cast=str)
+        SU_PASSWORD = config('DJANGO_SUPERUSER_PASSWORD', default=None, cast=str)
 
         if not all([SU_NAME, SU_EMAIL, SU_PASSWORD]):
             self.stdout.write(self.style.ERROR(
