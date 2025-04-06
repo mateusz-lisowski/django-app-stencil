@@ -8,6 +8,7 @@ It is a skeleton project for integrating all common libraries and making your co
 - **Postgres** as the main database
 - **Redis** as the caching database
 - **Docker** as the main deployment engine
+- **Jenkins** as CI/CD solution
 
 ### Django app dependencies
 - **Gmail** as mailing service (just for starting)
@@ -22,4 +23,24 @@ It is a skeleton project for integrating all common libraries and making your co
 ### Check if django is deploy-ready
 ```commandline
 python manage.py check --deploy
+```
+
+### Lint project with flake8
+```commandline
+flake8 --max-line-length 120
+```
+
+### Test chosen app
+```commandline
+coverage run --source='.' manage.py test myapp
+```
+
+### Test whole project
+```commandline
+coverage run --source='.' manage.py test .
+```
+
+### Get a coverage report
+```commandline
+coverage report
 ```
