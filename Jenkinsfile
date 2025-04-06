@@ -10,6 +10,7 @@ pipeline {
          stage('Install all dependencies') {
             steps {
                 sh '''
+                    cd src
                     pip install -r requirements.txt
                     pip install -r requirements_dev.txt
                 '''
