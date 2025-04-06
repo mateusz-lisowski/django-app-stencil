@@ -21,9 +21,6 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default=None, cast=str)
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 logger.warning(f"Running server in {'development' if DEBUG else 'production'} mode")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 # Hosts allowed to access site (* for all hosts allowed)
 ALLOWED_HOSTS = ['*']
 
@@ -192,7 +189,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# Static files (CSS, JavaScript, Images)
+# Url on the web under which static resources are available
 STATIC_URL = 'static/'
+# Directory to which static all found static files are copied after collecting
+STATIC_ROOT = BASE_DIR / 'static'
+
+# Other custom directories with static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'staticfiles',
+]
+
+STORAGES = {
+    # Whitenoise storage supporting caching and compression
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
