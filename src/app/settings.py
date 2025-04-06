@@ -106,6 +106,14 @@ else:
         },
     }
 
+# Set cache to redis in production
+if not DEBUG:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': config('REDIS_CONNECTION_URL', default='redis://127.0.0.1:6379', cast=str),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
