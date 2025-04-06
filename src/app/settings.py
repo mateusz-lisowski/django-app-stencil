@@ -14,8 +14,8 @@ logger.warning(f"Running server in {'development' if DEBUG else 'production'} mo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# Hosts allowed to access site (* for all hosts allowed)
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
