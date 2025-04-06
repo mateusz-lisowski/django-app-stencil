@@ -1,6 +1,16 @@
 import logging
 from pathlib import Path
 
+from decouple import config
+
+# Setup logger
+logger = logging.getLogger(__name__)
+
+# Uncomment this section to disable logs filtering and show all errors
+# from django.utils.log import DEFAULT_LOGGING
+#
+# DEFAULT_LOGGING['handlers']['console']['filters'] = []
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
