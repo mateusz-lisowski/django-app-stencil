@@ -4,9 +4,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# Django secret key
+SECRET_KEY = config('DJANGO_SECRET_KEY', default=None, cast=str)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-xd(9)g2f)i7^o-o38paow)88xh4r$)+qwxy(_$z*g-02jun_tf'
