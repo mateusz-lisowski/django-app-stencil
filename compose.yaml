@@ -29,5 +29,29 @@ services:
     ports:
       - "6379:6379"
 
+  app:
+    image: django-app
+    build: ./src/
+    container_name: app
+    command: >
+      sh -c "
+        # Cd into working directory
+        cd /code &&
+        # Make database migrations
+        python manage.py migrate --no-input &&
+        # Create admin if does not exist
+        python manage.py setup_admin &&
+        # Start production server
+        gunicorn app.wsgi:application --bind 0.0.0.0:8000
+      "
+    env_file:
+      - .env
+    environment:
+      DJANGO_DEBUG: False
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+
 volumes:
   postgres_data:
