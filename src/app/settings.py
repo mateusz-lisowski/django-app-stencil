@@ -86,12 +86,25 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Set SQLite database in development environment and Postgres in production environment
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('POSTGRES_NAME', default=None, cast=str),
+            'USER': config('POSTGRES_USER', default=None, cast=str),
+            'PASSWORD': config('POSTGRES_PASSWORD', default=None, cast=str),
+            'HOST': config('POSTGRES_HOST_NAME', default=None, cast=str),
+            'PORT': config('POSTGRES_PORT', default='5432', cast=str),
+        },
+    }
 
 
 # Password validation
