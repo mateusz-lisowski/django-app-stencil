@@ -26,6 +26,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third party apps
+
+    # Allauth ui (has to be before allauth app)
+    'allauth_ui',
+    # Allauth related apps
+    'allauth',
+    'allauth.account',
+    # Rest of allauth ui related apps
+    'slippers',
+    'widget_tweaks',
+
+    # Custom apps
+
+    # Include landing app with landing page rendering /src/landing
+    'landing',
+    # Include cli app with command line utilities /src/cli
+    'cli',
 ]
 
 MIDDLEWARE = [
