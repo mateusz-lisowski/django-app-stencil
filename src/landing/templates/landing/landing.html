@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Landing</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+Landing
+{% endblock title %}
+
+{% block content %}
     <h1>Example landing page</h1>
     {% include 'shared.html' %}
     {% if request.user.is_authenticated %}
@@ -25,5 +25,4 @@
     </ul>
     <h2>Test caching behavior</h2>
     <a href="{% url 'cached' %}">Go to cached clock</a>
-</body>
-</html>
+{% endblock content %}
