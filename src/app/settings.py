@@ -100,8 +100,11 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# If true, it means django is run inside CI pipline
+CI = config('CI', default=False, cast=bool)
+
 # Set SQLite database in development environment and Postgres in production environment
-if DEBUG:
+if DEBUG or CI:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

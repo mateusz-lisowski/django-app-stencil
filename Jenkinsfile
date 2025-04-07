@@ -7,6 +7,11 @@ pipeline {
         }
     }
 
+    environment {
+        // Set Ci to true in order to use SQLite database
+        CI = 'True'
+    }
+
     stages {
         stage('Install all dependencies') {
             steps {
@@ -25,6 +30,7 @@ pipeline {
             steps {
                 sh '''
                     python src/manage.py collectstatic --no-input
+                    python src/manage.py migrate --no-input
                 '''
             }
         }
