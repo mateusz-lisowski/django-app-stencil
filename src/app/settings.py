@@ -124,7 +124,7 @@ else:
     }
 
 # Set cache to redis in production
-if not DEBUG:
+if not DEBUG and not CI:
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
