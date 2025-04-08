@@ -21,8 +21,6 @@ pipeline {
                     pip install --upgrade pip
                     echo "Installing development requirements..."
                     pip install -r requirements_dev.txt
-                    # Install unittest-xml-reporting for JUnit XML reports
-                    pip install unittest-xml-reporting
                 '''
             }
         }
@@ -53,32 +51,27 @@ pipeline {
                 '''
             }
         }
-        stage('Perform tests and generate reports') { // Renamed stage
+        stage('Perform all unit tests and generate coverage report') {
             steps {
                 sh '''
                     cd src
-                    # Run tests using the XMLTestRunner to generate JUnit XML report
-                    # Ensure tests are discovered correctly (adjust '.' if needed)
-                    coverage run --source='.' manage.py test --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner .
+                    # Run tests and collect coverage data
+                    coverage run --source='.' manage.py test .
 
-                    # Generate coverage report in Cobertura XML format
+                    # Generate coverage report in XML format (Cobertura)
                     coverage xml -o coverage.xml
 
-                    # Optional: Generate console report
+                    # Optional: Generate console report for quick view in logs
                     # coverage report
 
                     # Optional: Generate HTML report for Browse
                     # coverage html # Output will be in htmlcov/ directory
                 '''
             }
-            // Post actions to publish reports
+            // Add a post-build action to publish the report
             post {
                 always {
-                    // Publish JUnit XML test results
-                    junit '**/TEST-*.xml' // Default pattern for unittest-xml-reporting
-
-                    // Publish Cobertura coverage report
-                    publishCoverage adapters: [coberturaAdapter('**/coverage.xml')]
+                    junit '**/coverage.xml' // Tell Jenkins to look for the XML file
                 }
             }
         }
