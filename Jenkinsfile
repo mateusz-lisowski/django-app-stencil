@@ -26,6 +26,14 @@ pipeline {
                 '''
             }
         }
+        stage('Lint project with flake8') {
+            steps {
+                sh '''
+                    # Lint all code to ensure coherent styling
+                    flake8 --max-line-length 120 src
+                '''
+            }
+        }
         stage('Setup django application') {
             steps {
                 sh '''
@@ -33,14 +41,6 @@ pipeline {
                     python src/manage.py collectstatic --no-input
                     # Migrate all schemas to test database
                     python src/manage.py migrate --no-input
-                '''
-            }
-        }
-        stage('Lint project with flake8') {
-            steps {
-                sh '''
-                    # Lint all code to ensure coherent styling
-                    flake8 --max-line-length 120 src
                 '''
             }
         }
