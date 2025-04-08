@@ -13,13 +13,11 @@ pipeline {
     }
 
     stages {
-        stage('Install all dependencies') {
+        stage('Install development dependencies') {
             steps {
                 sh '''
                     cd src
                     # Update pip first (optional but good practice)
-                    pip install --upgrade pip
-                    echo "Installing production requirements..."
                     pip install -r requirements.txt
                     echo "Installing development requirements..."
                     pip install -r requirements_dev.txt
@@ -31,6 +29,15 @@ pipeline {
                 sh '''
                     # Lint all code to ensure coherent styling
                     flake8 --max-line-length 120 src
+                '''
+            }
+        }
+        stage('Install production dependencies') {
+            steps {
+                sh '''
+                    cd src
+                    echo "Installing production requirements..."
+                    pip install -r requirements.txt
                 '''
             }
         }
