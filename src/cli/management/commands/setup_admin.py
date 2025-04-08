@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 from decouple import config
 
+
 class Command(BaseCommand):
     help = 'Creates an admin user non-interactively if it does not exist'
 
