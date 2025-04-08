@@ -97,11 +97,19 @@ AUTHENTICATION_BACKENDS = [
 WSGI_APPLICATION = 'app.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# CI/CD configuration
 
 # If true, it means django is run inside CI pipline
 CI = config('CI', default=False, cast=bool)
+
+# Set the default test runner to junit test runner (for jenkins)
+TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
+TEST_OUTPUT_DIR = './test-reports'
+TEST_OUTPUT_FILE_NAME = 'unittest.xml'
+
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Set SQLite database in development environment and Postgres in production environment
 if DEBUG or CI:
