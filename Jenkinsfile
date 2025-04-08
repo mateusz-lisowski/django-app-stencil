@@ -29,7 +29,9 @@ pipeline {
         stage('Setup django application') {
             steps {
                 sh '''
+                    # Collect all static files needed for proper page work
                     python src/manage.py collectstatic --no-input
+                    # Migrate all schemas to test database
                     python src/manage.py migrate --no-input
                 '''
             }
