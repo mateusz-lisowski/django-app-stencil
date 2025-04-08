@@ -37,9 +37,8 @@ pipeline {
         stage('Lint project with flake8') {
             steps {
                 sh '''
-                    # Uncomment this line to actually run flake8
-                    # flake8 --max-line-length 120 src
-                    echo "Skipping flake8 linting (commented out)."
+                    # Lint all code to ensure coherent styling
+                    flake8 --max-line-length 120 src
                 '''
             }
         }
