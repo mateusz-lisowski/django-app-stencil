@@ -50,6 +50,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+test-reports/
 
 # --- Django ---
 # Database files (common development databases)
