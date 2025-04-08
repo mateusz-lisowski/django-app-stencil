@@ -21,6 +21,8 @@ pipeline {
                     pip install --upgrade pip
                     echo "Installing development requirements..."
                     pip install -r requirements_dev.txt
+                    # Install unittest-xml-reporting for JUnit XML reports
+                    pip install unittest-xml-reporting
                 '''
             }
         }
@@ -51,27 +53,32 @@ pipeline {
                 '''
             }
         }
-        stage('Perform all unit tests and generate coverage report') {
+        stage('Perform tests and generate reports') { // Renamed stage
             steps {
                 sh '''
                     cd src
-                    # Run tests and collect coverage data
-                    coverage run --source='.' manage.py test .
+                    # Run tests using the XMLTestRunner to generate JUnit XML report
+                    # Ensure tests are discovered correctly (adjust '.' if needed)
+                    coverage run --source='.' manage.py test --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner .
 
-                    # Generate coverage report in XML format (Cobertura)
+                    # Generate coverage report in Cobertura XML format
                     coverage xml -o coverage.xml
 
-                    # Optional: Generate console report for quick view in logs
+                    # Optional: Generate console report
                     # coverage report
 
                     # Optional: Generate HTML report for Browse
                     # coverage html # Output will be in htmlcov/ directory
                 '''
             }
-            // Add a post-build action to publish the report
+            // Post actions to publish reports
             post {
                 always {
-                    junit '**/coverage.xml' // Tell Jenkins to look for the XML file
+                    // Publish JUnit XML test results
+                    junit '**/TEST-*.xml' // Default pattern for unittest-xml-reporting
+
+                    // Publish Cobertura coverage report
+                    publishCoverage adapters: [coberturaAdapter('**/coverage.xml')]
                 }
             }
         }
