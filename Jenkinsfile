@@ -51,15 +51,28 @@ pipeline {
                 '''
             }
         }
-        stage('Perform all unit tests') {
+        stage('Perform all unit tests and generate coverage report') {
             steps {
                 sh '''
                     cd src
+                    # Run tests and collect coverage data
                     coverage run --source='.' manage.py test .
-                    # Optional: Generate coverage report
+
+                    # Generate coverage report in XML format (Cobertura)
+                    coverage xml -o coverage.xml
+
+                    # Optional: Generate console report for quick view in logs
                     # coverage report
-                    # coverage html # For HTML report
+
+                    # Optional: Generate HTML report for Browse
+                    # coverage html # Output will be in htmlcov/ directory
                 '''
+            }
+            // Add a post-build action to publish the report
+            post {
+                always {
+                    junit '**/coverage.xml' // Tell Jenkins to look for the XML file
+                }
             }
         }
         stage('Deploy app to production environment') {
