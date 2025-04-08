@@ -71,7 +71,7 @@ pipeline {
             // Add a post-build action to publish the report
             post {
                 always {
-                    junit '**/coverage.xml' // Tell Jenkins to look for the XML file
+                    junit 'src/coverage.xml' // Tell Jenkins to look for the XML file
                 }
             }
         }
