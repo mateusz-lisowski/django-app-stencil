@@ -18,7 +18,7 @@ pipeline {
                 sh '''
                     cd src
                     # Update pip first (optional but good practice)
-                    pip install -r requirements.txt
+                    pip install --upgrade pip
                     echo "Installing development requirements..."
                     pip install -r requirements_dev.txt
                 '''
