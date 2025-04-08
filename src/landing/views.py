@@ -3,6 +3,7 @@ import datetime
 from django.views.decorators.cache import cache_page
 from django.shortcuts import render
 
+
 def landing_view(request):
     return render(request, 'landing/landing.html')
 
