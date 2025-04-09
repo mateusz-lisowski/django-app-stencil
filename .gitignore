@@ -62,8 +62,7 @@ db.sqlite3-journal # SQLite journal file
 /media/
 
 # Static files collected by collectstatic (these are generated, not source files)
-/static/
-/staticfiles/
+**/static/
 
 # Log files
 *.log
