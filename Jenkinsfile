@@ -92,7 +92,7 @@ pipeline {
                     echo "Setting up SSH configuration..."
                     mkdir -p ~/.ssh/
                     # Ensure the private key ends with a newline for compatibility
-                    (echo "$SSH_PRIVATE_KEY"; echo) > ~/.ssh/github
+                    echo "$SSH_PRIVATE_KEY" > ~/.ssh/github
                     chmod 600 ~/.ssh/github
                     echo "SSH key file created and permissions set."
                 '''
