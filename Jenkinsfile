@@ -82,29 +82,44 @@ pipeline {
         }
         stage('Deploy app to production environment') {
             steps {
+                // Step 1: Prepare SSH directory and private key
                 sh '''
-                    # Prepare the ssh host target file
+                    echo "Setting up SSH configuration..."
                     mkdir -p ~/.ssh/
                     echo "$SSH_PRIVATE_KEY" > ~/.ssh/github
                     chmod 600 ~/.ssh/github
+                    echo "SSH key file created and permissions set."
+                '''
+                // Step 2: Create/Append SSH config using here document
+                sh '''
+                    echo "Appending to SSH config..."
                     cat >>~/.ssh/config <<END
-                    Host target
-                      HostName $SSH_HOST
-                      User $SSH_USER
-                      IdentityFile ~/.ssh/github
-                      LogLevel ERROR
-                      StrictHostKeyChecking no
-                    END
-                    ## SSH into VPS instance and perform commands
+Host target
+  HostName $SSH_HOST
+  User $SSH_USER
+  IdentityFile ~/.ssh/github
+  LogLevel ERROR
+  StrictHostKeyChecking no
+END
+                    echo "SSH config updated."
+                '''
+                // Step 3: Execute remote commands via SSH
+                sh '''
+                    echo "Attempting SSH connection and deployment..."
                     ssh target "
-                        cd $REPO_NAME/
-                        && docker compose down
-                        && git pull
-                        && docker compose build
-                        && docker compose up -d --force-recreate
+                        echo 'Connected to target host.'
+                        cd $REPO_NAME/ || exit 1 # Exit if cd fails
+                        echo 'Pulling latest changes...'
+                        git pull || exit 1 # Exit if pull fails
+                        echo 'Stopping existing containers...'
+                        docker compose down
+                        echo 'Building new images...'
+                        docker compose build || exit 1 # Exit if build fails
+                        echo 'Starting new containers...'
+                        docker compose up -d --force-recreate || exit 1 # Exit if up fails
+                        echo 'Remote commands executed.'
                     "
-                    # Echo success message
-                    echo 'Application deployed successfully!'
+                    echo 'Application deployment commands sent successfully!'
                 '''
             }
         }
