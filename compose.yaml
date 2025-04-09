@@ -2,37 +2,33 @@ services:
 
   database:
     image: postgres:17-alpine
-    container_name: database
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${POSTGRES_NAME}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
+    networks:
+      - internal-service-network
 
   adminer:
     image: adminer:5
-    container_name: postgres_gui
     restart: always
-    ports:
-      - "8090:8080"
+    networks:
+      - internal-service-network
     depends_on:
       - database
 
   cache:
     image: redis:latest
-    container_name: cache
     restart: always
-    ports:
-      - "6379:6379"
+    networks:
+      - internal-service-network
 
   app:
-    image: django-app
     build: ./src/
-    container_name: app
+    image: django-test-deploy-app/django-app:latest
     command: >
       sh -c "
         # Cd into working directory
@@ -48,10 +44,22 @@ services:
       - .env
     environment:
       DJANGO_DEBUG: False
-    ports:
-      - "8000:8000"
+    networks:
+      # Connect Caddy to the shared network
+      - proxy-network
+      - internal-service-network
     depends_on:
       - database
 
+networks:
+  # Define the internal network for this stack (optional, but good practice)
+  internal-service-network:
+    driver: bridge
+
+  # Reference the pre-existing external network shared with Caddy
+  proxy-network: # The name here can be different, but the 'name' property must match
+    name: caddy-proxy-network # Use the exact name created earlier
+    external: true
+
 volumes:
-  postgres_data:
+  postgres-data:
