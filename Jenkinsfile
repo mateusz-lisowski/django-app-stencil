@@ -13,7 +13,7 @@ pipeline {
         // Set Ci to true in order to use SQLite database
         CI = 'True'
         // Private key to deployment VPS
-        SSH_PRIVATE_KEY = credentials('hostinger-private-key')
+        SSH_PRIVATE_KEY = credentials('jenkins-private-key-file')
         // User on the VPS
         SSH_USER = credentials('hostinger-username')
         // IP or domain name of VPS
