@@ -8,8 +8,16 @@ pipeline {
     }
 
     environment {
+        // Name of the repository
+        REPO_NAME = 'django-test-deploy-app'
         // Set Ci to true in order to use SQLite database
         CI = 'True'
+        // Private key to deployment VPS
+        SSH_PRIVATE_KEY = credentials('hostinger-private-key')
+        // User on the VPS
+        SSH_USER = credentials('hostinger-username')
+        // IP or domain name of VPS
+        SSH_HOST = credentials('hostinger-hostname')
     }
 
     stages {
@@ -58,9 +66,6 @@ pipeline {
                     # Run tests and collect coverage data
                     coverage run --source='.' manage.py test .
 
-                    # Generate coverage report in XML format (Cobertura)
-                    coverage xml -o coverage.xml
-
                     # Optional: Generate console report for quick view in logs
                     # coverage report
 
@@ -78,9 +83,28 @@ pipeline {
         stage('Deploy app to production environment') {
             steps {
                 sh '''
-                    echo 'Mock deploying to production...'
-                    # Add actual deployment commands here later
-                    echo 'Application successfully deployed!'
+                    # Prepare the ssh host target file
+                    mkdir -p ~/.ssh/
+                    echo "$SSH_PRIVATE_KEY" > ~/.ssh/github
+                    chmod 600 ~/.ssh/github
+                    cat >>~/.ssh/config <<END
+                    Host target
+                      HostName $SSH_HOST
+                      User $SSH_USER
+                      IdentityFile ~/.ssh/github
+                      LogLevel ERROR
+                      StrictHostKeyChecking no
+                    END
+                    ## SSH into VPS instance and perform commands
+                    ssh target "
+                        cd $REPO_NAME/
+                        && docker compose down
+                        && git pull
+                        && docker compose build
+                        && docker compose up -d --force-recreate
+                    "
+                    # Echo success message
+                    echo 'Application deployed successfully!'
                 '''
             }
         }
