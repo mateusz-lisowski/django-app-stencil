@@ -82,11 +82,17 @@ pipeline {
         }
         stage('Deploy app to production environment') {
             steps {
-                // Step 1: Prepare SSH directory and private key
+                // Step 1: Install SSH Client, Prepare SSH directory and private key
                 sh '''
+                    echo "Updating package list and installing SSH client..."
+                    # Update apk cache and install openssh-client
+                    # --no-cache avoids keeping the cache, saving space in the container layer
+                    apk update && apk add --no-cache openssh-client
+
                     echo "Setting up SSH configuration..."
                     mkdir -p ~/.ssh/
-                    echo "$SSH_PRIVATE_KEY" > ~/.ssh/github
+                    # Ensure the private key ends with a newline for compatibility
+                    (echo "$SSH_PRIVATE_KEY"; echo) > ~/.ssh/github
                     chmod 600 ~/.ssh/github
                     echo "SSH key file created and permissions set."
                 '''
@@ -101,12 +107,17 @@ Host target
   LogLevel ERROR
   StrictHostKeyChecking no
 END
+                    # Optional: Verify config file content
+                    # echo "--- SSH Config ---"
+                    # cat ~/.ssh/config
+                    # echo "------------------"
                     echo "SSH config updated."
                 '''
                 // Step 3: Execute remote commands via SSH
                 sh '''
                     echo "Attempting SSH connection and deployment..."
-                    ssh target "
+                    # Add -T to prevent pseudo-terminal allocation issues sometimes seen in CI
+                    ssh -T target "
                         echo 'Connected to target host.'
                         cd $REPO_NAME/ || exit 1 # Exit if cd fails
                         echo 'Pulling latest changes...'
