@@ -3,6 +3,14 @@
 Django test app for checking CI/CD pipelines and integration with servers.
 It is a skeleton project for integrating all common libraries and making your code easy-to-start.
 
+> ⚠️ **Warning:** You have to remember to set up external docker network by yourself.
+> It is also highly advisable to use reverse proxy server with HTTPS for safety reasons.
+
+> 💡 **Tip:** This project is prepared to integrate both with Jenkins and Caddy.
+> Relevant project can be found here:
+> - **Caddy stencil:** https://github.com/mateusz-lisowski/caddy-stencil
+> - **Jenkins stencil:** https://github.com/mateusz-lisowski/jenkins-stencil
+
 ## Project structure
 - **Django** as the main backbone of the project
 - **Postgres** as the main database
