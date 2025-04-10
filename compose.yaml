@@ -28,7 +28,6 @@ services:
 
   app:
     build: ./src/
-    image: django-test-deploy-app/django-app:latest
     command: >
       sh -c "
         # Cd into working directory
