@@ -9,11 +9,11 @@ pipeline {
 
     environment {
         // Name of the repository
-        REPO_NAME = 'django-test-deploy-app'
+        REPO_NAME = 'django-app-stencil'
         // Set Ci to true in order to use SQLite database
         CI = 'True'
         // Private key to deployment VPS
-        SSH_PRIVATE_KEY = credentials('jenkins-private-key-file')
+        SSH_PRIVATE_KEY = credentials('hostinger-private-key-file')
         // User on the VPS
         SSH_USER = credentials('hostinger-username')
         // IP or domain name of VPS
@@ -91,8 +91,8 @@ pipeline {
 
                     echo "Setting up SSH configuration..."
                     mkdir -p ~/.ssh/
-                    # Ensure the private key ends with a newline for compatibility
-                    echo "$SSH_PRIVATE_KEY" > ~/.ssh/github
+                    # Transfer SSH key file to dedicated directory
+                    mv $SSH_PRIVATE_KEY ~/.ssh/github
                     chmod 600 ~/.ssh/github
                     echo "SSH key file created and permissions set."
                 '''
@@ -107,10 +107,6 @@ Host target
   LogLevel ERROR
   StrictHostKeyChecking no
 END
-                    # Optional: Verify config file content
-                    # echo "--- SSH Config ---"
-                    # cat ~/.ssh/config
-                    # echo "------------------"
                     echo "SSH config updated."
                 '''
                 // Step 3: Execute remote commands via SSH
