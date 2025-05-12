@@ -18,6 +18,10 @@ pipeline {
         SSH_USER = credentials('hostinger-username')
         // IP or domain name of VPS
         SSH_HOST = credentials('hostinger-hostname')
+
+        API_GATEWAY_BASE_URL = 'https://0huk2skhj9.execute-api.eu-west-1.amazonaws.com/prod/'
+        COVERAGE_REPORT_DIR = 'htmlcov'
+        COVERAGE_ARCHIVE_NAME = 'coverage_report.zip'
     }
 
     stages {
@@ -69,14 +73,68 @@ pipeline {
                     # Optional: Generate console report for quick view in logs
                     # coverage report
 
-                    # Optional: Generate HTML report for Browse
-                    # coverage html # Output will be in htmlcov/ directory
+                    # Generate HTML report for Browse
+                    coverage html -d ${COVERAGE_REPORT_DIR}'
                 '''
             }
             // Add a post-build action to publish the report
             post {
                 always {
                     junit 'src/test-reports/unittest.xml' // Tell Jenkins to look for the XML file
+                }
+            }
+        }
+        stage('Archive Coverage Report') {
+            steps {
+                echo "Archiving coverage report directory: ${COVERAGE_REPORT_DIR} to ${COVERAGE_ARCHIVE_NAME}"
+                // The -j option in zip will junk paths, storing files at the root of the zip.
+                // If you want to preserve the htmlcov/ directory structure inside the zip, remove -j
+                // Or, more simply, cd into the parent and zip the directory:
+                // sh 'cd .. && zip -r workspace/${COVERAGE_ARCHIVE_NAME} ${COVERAGE_REPORT_DIR} && cd workspace'
+                // For simplicity, zipping the contents directly:
+                sh 'zip -r ${COVERAGE_ARCHIVE_NAME} ${COVERAGE_REPORT_DIR}'
+                sh 'ls -l ${COVERAGE_ARCHIVE_NAME}'
+            }
+        }
+        stage('Upload Coverage Report') {
+            steps {
+                script {
+                    echo "Requesting pre-signed URL for ${COVERAGE_ARCHIVE_NAME}..."
+
+                    // 1. Get pre-signed URL from your API
+                    // Ensure your Jenkins agent has 'curl'
+                    // The 'readJSON' step requires the "Pipeline Utility Steps" plugin in Jenkins
+                    def presignedUrlApiResponse = sh(
+                        script: """
+                            curl -s -X POST \\
+                              '${API_GATEWAY_BASE_URL}/get-upload-url' \\
+                              -H 'Content-Type: application/json' \\
+                              -d '{
+                                    "fileName": "${COVERAGE_ARCHIVE_NAME}",
+                                    "contentType": "application/zip"
+                                  }'
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    echo "API Response for pre-signed URL: ${presignedUrlApiResponse}"
+                    def jsonResponse = readJSON text: presignedUrlApiResponse
+                    def uploadUrl = jsonResponse.uploadUrl
+
+                    if (uploadUrl == null || uploadUrl.toString().isEmpty()) {
+                        error("Failed to get pre-signed upload URL. API Response was: ${presignedUrlApiResponse}")
+                    }
+                    echo "Successfully obtained pre-signed S3 URL."
+
+                    // 2. Upload the archive to S3 using the pre-signed URL
+                    echo "Uploading ${COVERAGE_ARCHIVE_NAME} to S3..."
+                    sh """
+                        curl -X PUT \\
+                          -T "${COVERAGE_ARCHIVE_NAME}" \\
+                          -H "Content-Type: application/zip" \\
+                          "${uploadUrl}"
+                    """
+                    echo "Coverage report archive uploaded successfully!"
                 }
             }
         }
