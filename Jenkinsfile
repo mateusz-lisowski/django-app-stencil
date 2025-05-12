@@ -28,6 +28,7 @@ pipeline {
         stage('Install development dependencies') {
             steps {
                 sh '''
+                    apk add --no-cache zip
                     cd src
                     # Update pip first (optional but good practice)
                     pip install --upgrade pip
