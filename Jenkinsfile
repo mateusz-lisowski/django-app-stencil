@@ -29,6 +29,8 @@ pipeline {
             steps {
                 sh '''
                     apk add --no-cache zip
+                    apk add --no-cache curl
+
                     cd src
                     # Update pip first (optional but good practice)
                     pip install --upgrade pip
