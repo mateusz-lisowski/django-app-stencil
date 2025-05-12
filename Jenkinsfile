@@ -93,7 +93,7 @@ pipeline {
                 // Or, more simply, cd into the parent and zip the directory:
                 // sh 'cd .. && zip -r workspace/${COVERAGE_ARCHIVE_NAME} ${COVERAGE_REPORT_DIR} && cd workspace'
                 // For simplicity, zipping the contents directly:
-                sh 'zip -r ${COVERAGE_ARCHIVE_NAME} ${COVERAGE_REPORT_DIR}'
+                sh 'zip -r ${COVERAGE_ARCHIVE_NAME} . -i ${COVERAGE_REPORT_DIR}'
                 sh 'ls -l ${COVERAGE_ARCHIVE_NAME}'
             }
         }
