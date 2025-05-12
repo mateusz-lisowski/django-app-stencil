@@ -5,7 +5,7 @@ Landing
 {% endblock title %}
 
 {% block content %}
-    <h1>Example landing page for KICC ;)</h1>
+    <h1>Example landing page</h1>
     {% include 'shared.html' %}
     {% if request.user.is_authenticated %}
         <span>Logged as: {{ request.user.username }} - {{ request.user.email}}</span>
