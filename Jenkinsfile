@@ -74,7 +74,7 @@ pipeline {
                     # coverage report
 
                     # Generate HTML report for Browse
-                    coverage html -d ${COVERAGE_REPORT_DIR}'
+                    coverage html -d ${COVERAGE_REPORT_DIR}
                 '''
             }
             // Add a post-build action to publish the report
